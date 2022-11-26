@@ -1,0 +1,9 @@
+.DS_Store
+.vscode
+venv
+__pycache__
+.env
+discord.py
+bot_logs.log
+*.sqlite
+config.yml

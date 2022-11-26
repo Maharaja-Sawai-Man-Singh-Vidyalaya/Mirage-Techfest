@@ -1,0 +1,59 @@
+# RENAME THIS FILE TO 'config.yml' and replace the configuration
+
+bot_config:
+    bot_name: Hyena # your bot's name
+    bot_description: The customisable and self hostable Hyena. # your bot's description'
+    bot_version: "1.0.0a" # bot version goes here
+    bot_prefix: "-" # your bot's prefix in quotation marks 
+    owners_id: # the IDs of the owners of the bots
+        - 711444754080071714
+        - 918703165648539700
+    cogs_not_to_load: 
+        - ""
+    # add cogs which you dont want to use in a list for example:
+    # cogs_not_to_load: 
+    #     - "file_name_of_cog.py"
+    #     - "file_name_of_cog2.py" 
+    # etc.....
+    mod_action_logs_channel: 814895166141628426 # the channel to get moderation action logs errors eg. ban/kick etc.
+    errors_channel: 814895166141628426 # the secret channel to get bot errors
+
+    statuses: # statuses you want to be displayed in your bot
+        - with the ban hammer!
+        - hey I'm the new and improved hostable hyena!
+        - https://github.com/Hyena-Bot
+    guild_id: 794467787690344508 # your server's ID
+    colors:              # theme color of the bot (you will see them in the embeds) (in python hex format)
+        - "0x3A4047"
+        - "0xFFFDFC"
+    success_emoji: "\U00002705" # any success/verified emoji in your server that looks good
+    # here's a good one-
+    # https://cdn.discordapp.com/emojis/905905851489988718.webp?size=96&quality=lossless
+    
+    failure_emoji: "\U0000274c" # default x mark emoji
+
+automod_config:
+    spam: true
+    spam_messages_back_to_back: 5 # Threshold cap
+    spam_message_word_limit: 500 # Words/message
+
+    badwords: true
+    custom_badwords:
+        - null # replace null with the badword needed. Defaults are given in src/data/filtered-words.json
+
+    caps: true
+    caps_threshold: 80 
+    invites: true
+    phish: true
+    nsfw: true
+
+    mentions: true # spam mention protection
+    mention_limit: 7 # number of mentions allowed in a single message
+    allow_duplicate_mentions: false # will consider duplicate mentions if set to false
+
+    warn_message: "Please refrain from sending rule breaking messages $mention."
+    embed_warn_message: true
+    delete_message_after: 3
+    
+    ignored_channels:
+        - null # add the channel ids, where automod will be ignored.
