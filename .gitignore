@@ -7,3 +7,4 @@ discord.py
 bot_logs.log
 *.sqlite
 config.yml
+src/tests
