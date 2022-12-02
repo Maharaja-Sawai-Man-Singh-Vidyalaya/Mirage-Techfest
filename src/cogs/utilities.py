@@ -343,7 +343,7 @@ Python Version: Python {platform.python_version()}
         await interaction.response.send_message("🏓 Ping...")
         end = time.perf_counter()
         duration = (end - start) * 1000
-        await interaction.edit_original_message(
+        await interaction.edit_original_response(
             content="**🏓 Pong!**\n```yaml\nMessage: {:.2f}ms\nWebsocket: {:.2f}ms```".format(
                 duration, self.bot.latency * 1000
             )

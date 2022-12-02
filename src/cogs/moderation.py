@@ -365,7 +365,7 @@ class Moderation(commands.Cog):
                 if ban_entry.user.id == int(member):
                     await interaction.response.send_message("Found ban entry :)")
                     await interaction.guild.unban(ban_entry.user)
-                    await interaction.edit_original_message(
+                    await interaction.edit_original_response(
                         content=f"🔓 Unbanned `{ban_entry.user}` \n**Reason:** {reason}"
                     )
                     success = True
@@ -376,7 +376,7 @@ class Moderation(commands.Cog):
                 if str(ban_entry.user).lower() == member.lower():
                     await interaction.response.send_message("Found ban entry :)")
                     await interaction.guild.unban(ban_entry.user)
-                    await interaction.edit_original_message(
+                    await interaction.edit_original_response(
                         content=f"🔓 Unbanned `{ban_entry.user}` \n**Reason:** {reason}"
                     )
                     success = True
