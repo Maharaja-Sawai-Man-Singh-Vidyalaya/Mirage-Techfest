@@ -8,4 +8,10 @@ bot_logs.log
 *.sqlite
 config.yml
 src/tests
+
+# replit
 .replit
+poetry.lock
+replit.nix
+pyproject.toml
+
