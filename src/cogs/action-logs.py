@@ -69,7 +69,7 @@ class ActionLogs(commands.Cog):
         member="The member to check the moderation actions for", page="The page number"
     )
     @app_commands.checks.has_permissions(manage_guild=True)
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _action(self, interaction, member: discord.User, page: Optional[int] = 1):
         """
         **Description:**
@@ -141,7 +141,7 @@ class ActionLogs(commands.Cog):
     )
     @app_commands.describe(member="The member to clear the moderation actions for")
     @app_commands.checks.has_permissions(manage_guild=True)
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _actions_clear(self, interaction, member: discord.User):
         """
         **Description:**

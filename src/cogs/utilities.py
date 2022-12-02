@@ -1,10 +1,12 @@
 import os
 import platform
 import time
+from re import compile
 
+import aiohttp
 import discord
 import psutil
-from discord import app_commands
+from discord import app_commands, ui
 from discord.ext import commands
 
 
@@ -18,7 +20,7 @@ class Utilities(commands.Cog):
     @app_commands.command(
         name="server-info", description="All the information about the guild."
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _server_info(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -116,7 +118,7 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
     @app_commands.command(
         name="user-info", description="All the information about a user."
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.describe(member="The target user")
     async def _user_info(
         self, interaction: discord.Interaction, member: discord.Member = None
@@ -212,7 +214,7 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="bot-info", description="Check the stats of the bot!")
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _bot_info(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -279,7 +281,7 @@ Python Version: Python {platform.python_version()}
     @app_commands.command(
         name="slowmode", description="Set the slow mode delay for a specific channel"
     )
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.describe(
         time="The delay with proper units, s|m|h ['remove' to remove slowmode]",
         channel="The channel to set slowmode",
@@ -325,7 +327,7 @@ Python Version: Python {platform.python_version()}
         await interaction.response.send_message(desc)
 
     @app_commands.command(name="ping", description="Check the ping of the bot.")
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _ping(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -348,6 +350,75 @@ Python Version: Python {platform.python_version()}
                 duration, self.bot.latency * 1000
             )
         )
+
+    class CodeInput(ui.Modal, title="Execute code"):
+        """The parent file input modal"""
+
+        async def _run_code(self, *, lang: str, code: str):
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    "https://emkc.org/api/v1/piston/execute",
+                    json={"language": lang, "source": code},
+                ) as res:
+                    return await res.json()
+
+        async def _send_result(self, result: dict):
+            if "message" in result:
+                return discord.Embed(
+                    title="Uh-oh",
+                    description=result["message"],
+                    color=discord.Color.red(),
+                )
+
+            output = result["output"]
+            embed = discord.Embed(
+                title=f"Ran your {result['language']} code", color=discord.Color.green()
+            )
+            output = output[:500]
+            shortened = len(output) > 500
+            lines = output.splitlines()
+            shortened = shortened or (len(lines) > 15)
+            output = "\n".join(lines[:15])
+            output += shortened * "\n\n**Output shortened**"
+            embed.add_field(name="Output", value=output or "**<No output>**")
+            embed.set_footer(
+                text="Exec Code", icon_url="https://i.ibb.co/D4BVwHz/image.png"
+            )
+
+            return embed
+
+        language = ui.TextInput(
+            label="Language", placeholder="Language name here...", max_length=20
+        )
+        code = ui.TextInput(
+            label="Code",
+            style=discord.TextStyle.paragraph,
+            placeholder="Type your code here...",
+        )
+
+        async def on_error(
+            self, error: Exception, interaction: discord.Interaction
+        ) -> None:
+            await interaction.response.send_message(
+                "Oops! Something went wrong.", ephemeral=True
+            )
+            raise error
+
+        async def on_submit(self, interaction: discord.Interaction) -> None:
+            result = await self._run_code(
+                lang=self.language.value, code=self.code.value
+            )
+
+            em = await self._send_result(result)
+
+            return await interaction.response.send_message(embed=em)
+
+    @app_commands.command(
+        name="exec", description="Run a code in a particular language"
+    )
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
+    async def _exec(self, interaction: discord.Interaction):
+        await interaction.response.send_modal(self.CodeInput())
 
 
 async def setup(bot):

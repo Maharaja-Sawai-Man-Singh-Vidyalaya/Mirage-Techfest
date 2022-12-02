@@ -59,7 +59,7 @@ class Moderation(commands.Cog):
             app_commands.Choice(name="Previous 7 days", value=7),
         ]
     )
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(ban_members=True)
     async def _ban(
         self,
@@ -158,7 +158,7 @@ class Moderation(commands.Cog):
             app_commands.Choice(name="Previous 7 days", value=7),
         ]
     )
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(ban_members=True)
     async def _soft_ban(
         self,
@@ -250,7 +250,7 @@ class Moderation(commands.Cog):
         member="The member to kick",
         reason="The reason to kick the member",
     )
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(kick_members=True)
     async def _kick(
         self,
@@ -416,7 +416,7 @@ class Moderation(commands.Cog):
         amount="number of messages to purge, use [all | max] to clear maximum",
         member="the member whose messages to purge",
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(manage_messages=True)
     async def _purge(
         self,
@@ -493,7 +493,7 @@ class Moderation(commands.Cog):
     @app_commands.describe(
         member="The member to rename", nickname="Reason for unbanning user"
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _nick(
         self, interaction, member: discord.Member, nickname: Optional[str] = None
     ):
@@ -552,7 +552,7 @@ class Moderation(commands.Cog):
     @app_commands.command(
         name="lock", description="Lock a channel so that people can't talk in it"
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.describe(channel="The channel to lock")
     @app_commands.checks.has_permissions(manage_channels=True)
     async def _lock(self, interaction, channel: Optional[discord.TextChannel] = None):
@@ -599,7 +599,7 @@ class Moderation(commands.Cog):
         name="unlock",
         description="Unlock channel to give access to the people to talk in the channel",
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.describe(channel="The channel to unlock")
     @app_commands.checks.has_permissions(manage_channels=True)
     async def _unlock(self, interaction, channel: Optional[discord.TextChannel] = None):

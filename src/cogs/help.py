@@ -47,9 +47,7 @@ class Right(discord.ui.Button):
 class Left(discord.ui.Button):
     def __init__(self, view):
         self._view = view
-        super().__init__(
-            emoji="◀️", row=1, style=discord.ButtonStyle.blurple
-        )
+        super().__init__(emoji="◀️", row=1, style=discord.ButtonStyle.blurple)
 
     async def callback(self, interaction):
         self._view.cur_page -= 1

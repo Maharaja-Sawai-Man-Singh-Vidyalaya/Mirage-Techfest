@@ -80,7 +80,7 @@ class Warnings(commands.Cog):
         member="The member to give the warning to", reason="The reason for the warning"
     )
     @app_commands.checks.has_permissions(manage_messages=True)
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _warn_give(
         self,
         interaction: discord.Interaction,
@@ -198,7 +198,7 @@ class Warnings(commands.Cog):
         indentifier="The ID of the warning, use view to find it out!",
     )
     @app_commands.checks.has_permissions(manage_messages=True)
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _warn_remove(self, interaction, member: discord.Member, indentifier: str):
         """
         **Description:**
@@ -290,7 +290,7 @@ class Warnings(commands.Cog):
         member="The member to view the warnings of", page="The page number"
     )
     @app_commands.checks.has_permissions(manage_messages=True)
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _warn_view(
         self, interaction, member: discord.Member, page: Optional[int] = 1
     ):
@@ -365,7 +365,7 @@ class Warnings(commands.Cog):
         reason="The reason to remove all the warnings",
     )
     @app_commands.checks.has_permissions(manage_messages=True)
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _warn_view(
         self,
         interaction,

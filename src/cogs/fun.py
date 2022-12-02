@@ -65,7 +65,7 @@ class Fun(commands.Cog):
         ```
         """
         results = await self.sra.get_data_for(
-            f"pokedex?pokemon={pokemon}", name="pokemon"
+            f"pokemon/pokedex?pokemon={pokemon}", name="pokemon"
         )
         if results:
             if results.get("error") is not None:

@@ -157,8 +157,8 @@ class FileSystem(commands.Cog):
         await interaction.response.send_modal(Create())
 
     @files.command(name="edit", description="Edit an already existing file")
-    @app_commands.checks.cooldown(1, 5)
-    async def _create_file(self, interaction: discord.Interaction):
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
+    async def _edit_file(self, interaction: discord.Interaction):
         """
         **Description:**
         Edit an already existing file
@@ -176,7 +176,7 @@ class FileSystem(commands.Cog):
     @files.command(
         name="append", description="Append (add) to an already existing file"
     )
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _append_file(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -193,7 +193,7 @@ class FileSystem(commands.Cog):
         await interaction.response.send_modal(Append())
 
     @files.command(name="delete", description="Delete an existing file")
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _delete_file(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -210,14 +210,14 @@ class FileSystem(commands.Cog):
         await interaction.response.send_modal(Delete())
 
     @files.command(name="view", description="view an existing file")
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _view_file(self, interaction: discord.Interaction):
         await interaction.response.send_modal(View())
 
     @files.command(
         name="view-names", description="View names of all the files that exist"
     )
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _view_all_file(self, interaction: discord.Interaction):
         """
         **Description:**

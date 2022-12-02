@@ -23,7 +23,7 @@ class Afk(commands.Cog):
         description="Set an AFK status to display when you are mentioned",
     )
     @app_commands.describe(reason="The AFK status")
-    @app_commands.checks.cooldown(1, 5)
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _afk_command(
         self, interaction: discord.Interaction, reason: Optional[str] = "AFK"
     ):

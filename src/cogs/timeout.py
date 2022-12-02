@@ -54,7 +54,7 @@ class Timeout(commands.Cog):
         name="add",
         description="Timeout (Mute) a user so they cannot add reactions/speak/join voice channels.",
     )
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(moderate_members=True)
     @app_commands.describe(
         member="The member to timeout/mute",
@@ -216,7 +216,7 @@ class Timeout(commands.Cog):
         )
 
     @timeout.command(name="view", description="View all timed out users for the server")
-    @app_commands.checks.cooldown(1, 3)
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.checks.has_permissions(moderate_members=True)
     async def _view(self, interaction: discord.Interaction):
         """
