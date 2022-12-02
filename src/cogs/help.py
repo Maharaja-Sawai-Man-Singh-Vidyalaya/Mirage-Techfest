@@ -34,7 +34,7 @@ class Right(discord.ui.Button):
     def __init__(self, view):
         self._view = view
         super().__init__(
-            emoji="<:right:875244926688960533>",
+            emoji="▶️",
             row=1,
             style=discord.ButtonStyle.blurple,
         )
@@ -48,7 +48,7 @@ class Left(discord.ui.Button):
     def __init__(self, view):
         self._view = view
         super().__init__(
-            emoji="<:left:875244882799771699>", row=1, style=discord.ButtonStyle.blurple
+            emoji="◀️", row=1, style=discord.ButtonStyle.blurple
         )
 
     async def callback(self, interaction):
@@ -60,7 +60,7 @@ class DoubleRight(discord.ui.Button):
     def __init__(self, view):
         self._view = view
         super().__init__(
-            emoji="<:double_right:875244972318810133>",
+            emoji="⏩",
             row=1,
             style=discord.ButtonStyle.blurple,
         )
@@ -74,7 +74,7 @@ class DoubleLeft(discord.ui.Button):
     def __init__(self, view):
         self._view = view
         super().__init__(
-            emoji="<:double_left:875244843452989490>",
+            emoji="⏪",
             row=1,
             style=discord.ButtonStyle.blurple,
         )
