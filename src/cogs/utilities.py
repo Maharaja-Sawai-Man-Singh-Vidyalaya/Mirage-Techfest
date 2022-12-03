@@ -418,6 +418,18 @@ Python Version: Python {platform.python_version()}
     )
     @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _exec(self, interaction: discord.Interaction):
+        """
+        **Description:**
+        Run a code in a particular language
+
+        **Args:**
+        • None
+
+        **Syntax:**
+        ```
+        /exec
+        ```
+        """
         await interaction.response.send_modal(self.CodeInput())
 
 
