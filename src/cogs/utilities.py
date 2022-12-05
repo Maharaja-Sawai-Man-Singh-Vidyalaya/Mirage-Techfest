@@ -1,7 +1,6 @@
 import os
 import platform
 import time
-from re import compile
 
 import aiohttp
 import discord
@@ -111,7 +110,7 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
         )
         embed.set_footer(
             text=f"Requested by {interaction.user}",
-            icon_url=interaction.user.avatar.url,
+            icon_url=self.bot.tools._get_mem_avatar(interaction.user),
         )
         await interaction.response.send_message(embed=embed)
 
@@ -177,9 +176,11 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
             color=self.bot._gen_colors(),
             timestamp=interaction.created_at,
         )
-        embed.set_author(name=member, icon_url=member.avatar.url)
-        embed.set_thumbnail(url=member.avatar.url)
-        embed.set_footer(text=f"ID: {member.id}", icon_url=member.avatar.url)
+        embed.set_author(name=member, icon_url=self.bot.tools._get_mem_avatar(member))
+        embed.set_thumbnail(url=self.bot.tools._get_mem_avatar(member))
+        embed.set_footer(
+            text=f"ID: {member.id}", icon_url=self.bot.tools._get_mem_avatar(member)
+        )
 
         embed.add_field(
             name="**Created at: **",
@@ -192,10 +193,14 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
             + f"\n (<t:{int(member.joined_at.timestamp())}:R>)",
         )
         embed.add_field(
-            name=f"Roles [{len(member.roles) - 1}]", value=roles, inline=False
+            name=f"Roles [{len(member.roles) - 1}]",
+            value=(roles or "None"),
+            inline=False,
         )
         if has_key_perms:
-            embed.add_field(name=f"Key Permissions", value=user_key_perms, inline=False)
+            embed.add_field(
+                name="Key Permissions", value=(user_key_perms or "None"), inline=False
+            )
 
         has_an_ack = False
         if member.guild_permissions.manage_messages:
@@ -209,7 +214,7 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
             has_an_ack = True
 
         if has_an_ack:
-            embed.add_field(name=f"Server Acknowledgements", value=ack, inline=False)
+            embed.add_field(name="Server Acknowledgements", value=ack, inline=False)
 
         await interaction.response.send_message(embed=embed)
 
@@ -260,7 +265,7 @@ Bot Roles: {len([r for r in interaction.guild.roles if r.is_bot_managed()])}
             )
 
         embed.description = f"""
-> **What is Hyena?** ```{self.bot.config['bot_config']['bot_description']}```
+> **What is {self.bot.config['bot_config']['bot_name']}?** ```{self.bot.config['bot_config']['bot_description']}```
 > **Hyena Version:** `{self.bot.config['bot_config']['bot_version']}`
 > **Total Users:** `{len(self.bot.users)}`
 > **Guild Prefix:** `{self.bot.config['bot_config']['bot_prefix']}`
