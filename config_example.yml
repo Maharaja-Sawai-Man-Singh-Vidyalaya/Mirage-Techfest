@@ -1,8 +1,8 @@
 # RENAME THIS FILE TO 'config.yml' and replace the configuration
 
 bot_config:
-    bot_name: Hyena # your bot's name
-    bot_description: The customisable and self hostable Hyena. # your bot's description'
+    bot_name: Mirage # your bot's name
+    bot_description: The customisable and self hostable Mirage. # your bot's description'
     bot_version: "1.0.0a" # bot version goes here
     bot_prefix: "-" # your bot's prefix in quotation marks 
     owners_id: # the IDs of the owners of the bots
@@ -20,7 +20,7 @@ bot_config:
 
     statuses: # statuses you want to be displayed in your bot
         - with the ban hammer!
-        - hey I'm the new and improved hostable hyena!
+        - hey I'm the new and improved hostable mirage!
         - https://github.com/Hyena-Bot
     guild_id: 794467787690344508 # your server's ID
     colors:              # theme color of the bot (you will see them in the embeds) (in python hex format)

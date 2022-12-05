@@ -180,6 +180,15 @@ class Bot(commands.Bot):
             ("fun", "fun-commands"): "fun",
             ("images", "image", "gen", "image-gen", "img", "img-gen"): "image-gen",
             ("utils", "utilities", "util"): "utilities",
+            ("automod", "am"): "automod",
+            ("help", "bothelp", "bot-help"): "help",
+            (
+                "join-leave-handler",
+                "jlh",
+                "jlhandler",
+                "wgh",
+                "wghandler",
+            ): "join-leave-handler",
         }
 
         for alias, cog in aliases.items():
