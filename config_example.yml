@@ -57,3 +57,49 @@ automod_config:
     
     ignored_channels:
         - null # add the channel ids, where automod will be ignored.
+
+# VARIABLES:
+# {$mention} -> mention user
+# {$username} -> username (name without discriminator)
+# {$discriminator} -> discriminator
+# {$user} -> username with discriminator
+# {$userid} -> user identifier
+# {$pfp} -> user profile picture
+# {$servericon} -> server icon
+# {$botpfp} -> bot profile picture
+# {$servername} -> server name
+# {$serverid} -> server identifier
+
+# you can use discord markdown in strings too
+
+welcome_config: 
+    msg_channel_id: 1048136553450459229 # channel where the embed should be sent
+
+    text: "Welcome {$mention}." # the normal text outside the embed
+
+    embed_author_title: "{$username} just joined the server"
+    embed_author_icon: "{$pfp}" # should be a URL
+
+    thumbnail: "{$botpfp}"
+
+    embed_title: "" # optional field, if not any leave an empty string ""
+    embed_description: "go to <#1048136553450459229> if you would like to hang out. Come on what are you waiting for!" # optional field, if not any leave an empty string ""
+
+    embed_footer_text: "Welcome to {$servername}!"
+    embed_footer_icon: "{$servericon}"
+
+goodbye_config: 
+    msg_channel_id: 1048136553450459229 # channel where the embed should be sent
+
+    text: "Goodbye {$mention}." # the normal text outside the embed
+
+    embed_author_title: "{$username} just left the server"
+    embed_author_icon: "{$pfp}" # should be a URL
+
+    thumbnail: "{$botpfp}"
+
+    embed_title: "" # optional field, if not any leave an empty string ""
+    embed_description: "{$username} left the server, thanks for using Mirage!" # optional field, if not any leave an empty string ""
+
+    embed_footer_text: "{$userid}"
+    embed_footer_icon: "{$servericon}"

@@ -82,7 +82,10 @@ class JLHandlers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if not member or not member.guild:
+        if not member or not member.guild or member.id == self.bot.user.id:
+            return
+
+        if member.guild.id != self.bot.config["bot_config"]["guild_id"]:
             return
 
         embed = discord.Embed(
@@ -138,7 +141,10 @@ class JLHandlers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        if not member or not member.guild:
+        if not member or not member.guild or member.id == self.bot.user.id:
+            return
+
+        if member.guild.id != self.bot.config["bot_config"]["guild_id"]:
             return
 
         embed = discord.Embed(
