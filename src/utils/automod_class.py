@@ -136,11 +136,14 @@ class Automod:
             current_message_interval = self.bot.config["automod_config"][
                 "spam_messages_back_to_back"
             ]
-            message_size = self.bot.config["automod_config"]["spam_message_word_limit"]
 
             if len(messages) >= current_message_interval:
-                return True
-            elif len(self.message.content) >= message_size:
+                await self.message.channel.purge(
+                    limit = 50,
+                    check = lambda msg: msg.author.id == self.message.author.id,
+                    after = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=10)),
+                    bulk = True
+                )
                 return True
             else:
                 return False

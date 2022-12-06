@@ -19,9 +19,13 @@ bot_config:
     errors_channel: 814895166141628426 # the secret channel to get bot errors
 
     statuses: # statuses you want to be displayed in your bot
-        - with the ban hammer!
-        - hey I'm the new and improved hostable mirage!
-        - https://github.com/Hyena-Bot
+        - "رحلة نحو سراب لا تنتهي أبدا."
+        - "A journey towards a mirage never ends."
+        - "मृगतृष्णा की ओर यात्रा कभी समाप्त नहीं होती।"
+        - "Un voyage vers un mirage ne se termine jamais."
+        - "Путешествие к миражу никогда не заканчивается."
+        - "Eine Reise zu einer Fata Morgana endet nie."
+
     guild_id: 794467787690344508 # your server's ID
     colors:              # theme color of the bot (you will see them in the embeds) (in python hex format)
         - "0x3A4047"

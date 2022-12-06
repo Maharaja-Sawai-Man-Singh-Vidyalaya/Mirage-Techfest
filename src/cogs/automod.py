@@ -31,8 +31,9 @@ Kindly check out ../LICENSE
 """
 
 import discord
+import time
 from discord import app_commands
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 class Automoderation(commands.Cog):
@@ -41,9 +42,11 @@ class Automoderation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.caps_limit = self.bot.config["automod_config"]["caps_threshold"]
-        self.delete_after = self.bot.config["automod_config"]["delete_message_after"]
+        self.delete_after = self.bot.config["automod_config"][
+            "delete_message_after"]
         self.mention_limit = self.bot.config["automod_config"]["mention_limit"]
         self.category = ["moderation"]
+        self.last_warned = {}
 
     def _get_emoji(self, status: bool):
         """Returns the emoji for the given status [True|False]"""
@@ -75,10 +78,12 @@ class Automoderation(commands.Cog):
         embed = discord.Embed(color=discord.Color.green())
         embed.title = "Automod Setup For {}".format(interaction.guild.name)
         embed.description = f"`Automod Config` for {interaction.guild.name}"
-        filters = ["spam", "badwords", "caps", "invites", "phish", "nsfw", "mentions"]
+        filters = [
+            "spam", "badwords", "caps", "invites", "phish", "nsfw", "mentions"
+        ]
         ignored_channels = [
-            self.bot.get_channel(channel).mention
-            for channel in self.bot.config["automod_config"]["ignored_channels"]
+            self.bot.get_channel(channel).mention for channel in
+            self.bot.config["automod_config"]["ignored_channels"]
             if channel is not None
         ]
 
@@ -91,7 +96,8 @@ class Automoderation(commands.Cog):
             )
 
         if ignored_channels:
-            embed.add_field(name="Ignored Channels", value=", ".join(ignored_channels))
+            embed.add_field(name="Ignored Channels",
+                            value=", ".join(ignored_channels))
 
         await interaction.response.send_message(embed=embed)
 
@@ -100,15 +106,26 @@ class Automoderation(commands.Cog):
         automod = self.bot.AutomodHandler(self.bot, message)
         member = message.guild.get_member(message.author.id)
 
-        if (
-            not message.guild
-            or message.author.id == self.bot.user.id
-            or automod.is_author_mod()
-            or automod.is_ignored_channel()
-        ):
+        if (not message.guild or message.author.id == self.bot.user.id
+                or automod.is_author_mod() or automod.is_ignored_channel()):
             return
 
-        if await automod.is_badwords():
+        if await automod.is_spam():
+            last_warned = self.last_warned.get(member.id)
+
+            if last_warned:
+                if (time.time() - last_warned) > 10:
+                    self.last_warned[member.id] = time.time()
+                    await message.channel.send(
+                    f"{member.mention}, stop spamming idiot.", delete_after=2)
+                await automod.take_action()
+            else:
+                self.last_warned[member.id] = time.time()
+                await message.channel.send(
+                    f"{member.mention}, stop spamming idiot.", delete_after=2)
+                await automod.take_action()
+
+        elif await automod.is_badwords():
             await message.channel.send(
                 f"{member.mention}, that word is blacklisted.",
                 delete_after=self.delete_after,
@@ -129,25 +146,15 @@ class Automoderation(commands.Cog):
             )
             await automod.take_action()
 
-        elif await automod.is_spam():
-            await message.channel.send(
-                f"{member.mention}, stop spamming idiot.", delete_after=2
-            )
-            await automod.take_action()
-
         elif _phish_res := (await automod.is_phish_url()):
-            desc = "\n".join(
-                [
-                    f"Domain: {match['url'][:12]}..., Type: {match['type']}, Surety: {float(match['trust_rating']) * 100}%"
-                    for match in _phish_res[1]
-                ]
-            )
+            desc = "\n".join([
+                f"Domain: {match['url'][:12]}..., Type: {match['type']}, Surety: {float(match['trust_rating']) * 100}%"
+                for match in _phish_res[1]
+            ])
             await message.channel.send(
-                (
-                    f"{member.mention}, you really think you can phish people?\n\n"
-                    "Anti Phish Test Results:\n"
-                    f"```{desc}```"
-                ),
+                (f"{member.mention}, you really think you can phish people?\n\n"
+                 "Anti Phish Test Results:\n"
+                 f"```{desc}```"),
                 delete_after=7,
             )
             await automod.take_action()
@@ -172,10 +179,20 @@ class Automoderation(commands.Cog):
         await self._handler(message)
 
     @commands.Cog.listener()
-    async def on_message_edit(self, _: discord.Message, after: discord.Message):
+    async def on_message_edit(self, _: discord.Message,
+                              after: discord.Message):
         """Moderate on a message edit"""
         await self._handler(after)
 
+    @tasks.loop(seconds=120)
+    async def _del_last_warned(self):
+        """
+        Delete last warned variable if not in use
+        """
+
+        for id, _time in self._last_warned.items():
+            if (time.time() - _time) > 10:
+                print(self._last_warned.pop(id, None))
 
 async def setup(bot):
     """Setup function for cog"""
