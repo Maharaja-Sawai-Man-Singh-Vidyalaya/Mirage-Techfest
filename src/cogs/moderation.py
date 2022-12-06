@@ -440,9 +440,12 @@ class Moderation(commands.Cog):
         await interaction.response.defer(thinking=True)
         hist_gen = interaction.channel.history(limit=2)
         hist = [m async for m in hist_gen]
-        created_at = (
-            datetime.datetime.now(datetime.timezone.utc) - hist[1].created_at
-        ).days
+        try:
+            created_at = (
+                datetime.datetime.now(datetime.timezone.utc) - hist[1].created_at
+            ).days
+        except KeyError:
+            return await interaction.response.send_message("Nothing to purge :|")
         back = datetime.datetime.utcnow() - datetime.timedelta(days=14)
 
         if int(created_at) >= 14:
