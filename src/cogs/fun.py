@@ -31,11 +31,138 @@ Kindly check out ../LICENSE
 """
 
 
+import random
 import re
+from typing import List
+from urllib import parse
 
 import discord
 from discord import app_commands
 from discord.ext import commands
+
+
+class TicTacToeButton(discord.ui.Button["TicTacToe"]):
+    def __init__(self, x: int, y: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="\u200b", row=y)
+        self.x = x
+        self.y = y
+
+    async def callback(self, interaction: discord.Interaction):
+
+        global player1
+        global player2
+
+        assert self.view is not None
+        view: TicTacToe = self.view
+        state = view.board[self.y][self.x]
+        if state in (view.X, view.O):
+            return
+
+        content = None
+
+        if view.current_player == view.X:
+            if interaction.user != player1:
+                await interaction.response.send_message(
+                    "Its not your Turn!", ephemeral=True
+                )
+            else:
+                self.style = discord.ButtonStyle.danger
+                self.label = "X"
+                self.disabled = True
+                view.board[self.y][self.x] = view.X
+                view.current_player = view.O
+                content = "It is now O's turn"
+
+        else:
+            if interaction.user != player2:
+                await interaction.response.send_message(
+                    "Its not your Turn!", ephemeral=True
+                )
+            else:
+                self.style = discord.ButtonStyle.success
+                self.label = "O"
+                self.disabled = True
+                view.board[self.y][self.x] = view.O
+                view.current_player = view.X
+                content = "It is now X's turn"
+
+        winner = view.check_board_winner()
+        if winner is not None:
+            if winner == view.X:
+                content = "X won!"
+            elif winner == view.O:
+                content = "O won!"
+            else:
+                content = "It's a tie!"
+
+            for child in view.children:
+                child.disabled = True
+
+            view.stop()
+
+        await interaction.response.edit_message(content=content, view=view)
+
+
+# This is our actual board View
+class TicTacToe(discord.ui.View):
+    # This tells the IDE or linter that all our children will be TicTacToeButtons
+    # This is not required
+    children: List[TicTacToeButton]
+    X = -1
+    O = 1
+    Tie = 2
+
+    def __init__(self):
+        super().__init__()
+        self.current_player = self.X
+        self.board = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ]
+
+        # Our board is made up of 3 by 3 TicTacToeButtons
+        # The TicTacToeButton maintains the callbacks and helps steer
+        # the actual game.
+        for x in range(3):
+            for y in range(3):
+                self.add_item(TicTacToeButton(x, y))
+
+    # This method checks for the board winner -- it is used by the TicTacToeButton
+    def check_board_winner(self):
+        for across in self.board:
+            value = sum(across)
+            if value == 3:
+                return self.O
+            elif value == -3:
+                return self.X
+
+        # Check vertical
+        for line in range(3):
+            value = self.board[0][line] + self.board[1][line] + self.board[2][line]
+            if value == 3:
+                return self.O
+            elif value == -3:
+                return self.X
+
+        # Check diagonals
+        diag = self.board[0][2] + self.board[1][1] + self.board[2][0]
+        if diag == 3:
+            return self.O
+        elif diag == -3:
+            return self.X
+
+        diag = self.board[0][0] + self.board[1][1] + self.board[2][2]
+        if diag == 3:
+            return self.O
+        elif diag == -3:
+            return self.X
+
+        # If we're here, we need to check if a tie was made
+        if all(i != 0 for row in self.board for i in row):
+            return self.Tie
+
+        return None
 
 
 class Fun(commands.Cog):
@@ -295,6 +422,86 @@ class Fun(commands.Cog):
         await msg.reply(
             message, allowed_mentions=discord.AllowedMentions(replied_user=False)
         )
+
+    # ----------------------------- GAMES -----------------------------------
+
+    @app_commands.command(
+        name="tictactoe", description="Play tictactoe, you can play with yourself too."
+    )
+    @app_commands.describe(enemy="Your opponent")
+    @app_commands.checks.cooldown(1, 10, key=lambda i: (i.guild_id, i.user.id))
+    async def tictactoe(self, interaction: discord.Interaction, enemy: discord.Member):
+        """
+        **Description:**
+        Play tictactoe, you can play with yourself too.
+
+        **Args:**
+        • enemy
+
+        **Syntax:**
+        ```
+        /tictactoe enemy
+        ```
+        """
+        await interaction.response.defer(thinking=True)
+
+        if enemy.bot:
+            return await interaction.followup.send(
+                f"You can't play with a bot, you can play with yourself though.\nTry `/tictactoe enemy:{interaction.user}`"
+            )
+        await interaction.followup.send("Tic Tac Toe: X goes first", view=TicTacToe())
+
+        global player1
+        global player2
+
+        player1 = interaction.user
+        player2 = enemy
+
+    @app_commands.command(
+        name="8ball", description="Ask a question and get a random answer"
+    )
+    @app_commands.describe(question="The question to be answered.")
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
+    async def _ball(self, interaction: discord.Interaction, question: str):
+        await interaction.response.defer(thinking=True)
+        res = await self.bot.http._HTTPClient__session.get(
+            f"https://eightballapi.com/api?{parse.quote(question)}&lucky=false"
+        )
+        res = await res.json()
+
+        embed = discord.Embed(
+            timestamp=interaction.created_at, color=self.bot._gen_colors()
+        )
+        embed.set_author(
+            name="8ball...", icon_url=self.bot.tools._get_mem_avatar(interaction.user)
+        )
+
+        embed.add_field(name="Question: ", value=question, inline=False)
+        embed.add_field(name="Answer: ", value=res["reading"], inline=False)
+
+        await interaction.followup.send(embed=embed)
+
+    @app_commands.command(name="dice", description="Roll a dice.")
+    async def dice(self, interaction: discord.Interaction):
+        outputs = [
+            "https://cdn.discordapp.com/emojis/755891608859443290.webp?size=96&quality=lossless",
+            "https://cdn.discordapp.com/emojis/755891608741740635.webp?size=96&quality=lossless",
+            "https://cdn.discordapp.com/emojis/755891608251138158.webp?size=96&quality=lossless",
+            "https://cdn.discordapp.com/emojis/755891607882039327.webp?size=96&quality=lossless",
+            "https://cdn.discordapp.com/emojis/755891608091885627.webp?size=96&quality=lossless",
+            "https://cdn.discordapp.com/emojis/755891607680843838.webp?size=96&quality=lossless",
+        ]
+
+        await interaction.response.send_message(random.choice(outputs))
+
+    @app_commands.command(name="coinflip", description="Flip a coin.")
+    async def flip(self, interaction: discord.Interaction):
+        outputs = [
+            "https://i.ibb.co/pwgPZBY/image.png",
+            "https://i.ibb.co/gvd5M5y/image.png",
+        ]
+
+        await interaction.response.send_message(random.choice(outputs))
 
 
 async def setup(bot):
