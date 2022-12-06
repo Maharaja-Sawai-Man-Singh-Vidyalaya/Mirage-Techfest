@@ -445,7 +445,7 @@ class Moderation(commands.Cog):
                 datetime.datetime.now(datetime.timezone.utc) - hist[1].created_at
             ).days
         except IndexError:
-            return await interaction.response.send_message("Nothing to purge :|")
+            return await interaction.followup.send("Nothing to purge :|")
         back = datetime.datetime.utcnow() - datetime.timedelta(days=14)
 
         if int(created_at) >= 14:
