@@ -139,10 +139,13 @@ class Automod:
 
             if len(messages) >= current_message_interval:
                 await self.message.channel.purge(
-                    limit = 50,
-                    check = lambda msg: msg.author.id == self.message.author.id,
-                    after = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(seconds=10)),
-                    bulk = True
+                    limit=50,
+                    check=lambda msg: msg.author.id == self.message.author.id,
+                    after=(
+                        datetime.datetime.now(datetime.timezone.utc)
+                        - datetime.timedelta(seconds=10)
+                    ),
+                    bulk=True,
                 )
                 return True
             else:
