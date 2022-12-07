@@ -31,6 +31,7 @@ Kindly check out ../LICENSE
 """
 
 
+import asyncio
 import random
 import re
 from typing import List
@@ -540,6 +541,90 @@ class Fun(commands.Cog):
         ]
 
         await interaction.response.send_message(random.choice(outputs))
+
+    @app_commands.command(
+        name="number-guessing",
+        description="Guess a random number from a given range, you get 7 chances.",
+    )
+    @app_commands.describe(
+        start="The start number of the range (inclusive)",
+        end="The end number of the range (inclusive)",
+    )
+    async def guess_the_num(
+        self, interaction: discord.Interaction, start: int, end: int
+    ):
+        """
+        **Description:**
+        Guess a random number from a given range, you get 7 chances.
+
+        **Args:**
+        • <start>: The start number of the range
+        • <end>: The end number of the range
+
+        **Syntax:**
+        ```
+        /number-guessing <start> <ending>
+        ```
+        """
+
+        if start < 0 or end < 0:
+            return await interaction.response.send_message(
+                "numbers cannot be negative."
+            )
+
+        if (end - start) < 10 or (end - start) > 1000:
+            return await interaction.response.send_message(
+                "The range should at least differ by 10 and max by 1000."
+            )
+
+        num = random.randrange(start, end + 1)
+
+        msg = await interaction.response.send_message("Guess the number")
+
+        def check(m):
+            try:
+                content = int(m.content)
+            except:
+                return False
+            else:
+                if m.author == interaction.user and content <= end and content >= start:
+                    return True
+                else:
+                    return False
+
+        attempts = 0
+
+        while 1:
+            try:
+                message = await self.bot.wait_for("message", timeout=30, check=check)
+            except asyncio.TimeoutError:
+                return await interaction.edit_original_response(
+                    content="You did not respond on time :|"
+                )
+            else:
+                if int(message.content) == num:
+                    await interaction.edit_original_response(
+                        content="You guessed it Right 🎉!",
+                        attachments=[discord.File("./assets/stickman/happy.png")],
+                    )
+                    break
+                else:
+                    attempts += 1
+                    if attempts == 7:
+                        await interaction.edit_original_response(
+                            content=f"You could not guess the number, it was `{num}`",
+                            attachments=[
+                                discord.File(f"./assets/stickman/{attempts}.png")
+                            ],
+                        )
+                        break
+                    else:
+                        await interaction.edit_original_response(
+                            content="Wrong!",
+                            attachments=[
+                                discord.File(f"./assets/stickman/{attempts}.png")
+                            ],
+                        )
 
 
 async def setup(bot):
