@@ -436,11 +436,11 @@ class Fun(commands.Cog):
         Play tictactoe, you can play with yourself too.
 
         **Args:**
-        • enemy
+        • <enemy>
 
         **Syntax:**
         ```
-        /tictactoe enemy
+        /tictactoe <enemy>
         ```
         """
         await interaction.response.defer(thinking=True)
@@ -463,6 +463,18 @@ class Fun(commands.Cog):
     @app_commands.describe(question="The question to be answered.")
     @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     async def _ball(self, interaction: discord.Interaction, question: str):
+        """
+        **Description:**
+        Ask a question and get a random answer
+
+        **Args:**
+        • `[question]` - The question to be answered.
+
+        **Syntax:**
+        ```
+        /8ball <question>
+        ```
+        """
         await interaction.response.defer(thinking=True)
         res = await self.bot.http._HTTPClient__session.get(
             f"https://eightballapi.com/api?{parse.quote(question)}&lucky=false"
@@ -483,6 +495,19 @@ class Fun(commands.Cog):
 
     @app_commands.command(name="dice", description="Roll a dice.")
     async def dice(self, interaction: discord.Interaction):
+        """
+        **Description:**
+        Roll a dice.
+
+        **Args:**
+        • None
+
+        **Syntax:**
+        ```
+        /dice
+        ```
+        """
+
         outputs = [
             "https://cdn.discordapp.com/emojis/755891608859443290.webp?size=96&quality=lossless",
             "https://cdn.discordapp.com/emojis/755891608741740635.webp?size=96&quality=lossless",
@@ -496,6 +521,19 @@ class Fun(commands.Cog):
 
     @app_commands.command(name="coinflip", description="Flip a coin.")
     async def flip(self, interaction: discord.Interaction):
+        """
+        **Description:**
+        Flip a coin.
+
+        **Args:**
+        • None
+
+        **Syntax:**
+        ```
+        /coinflip
+        ```
+        """
+
         outputs = [
             "https://i.ibb.co/pwgPZBY/image.png",
             "https://i.ibb.co/gvd5M5y/image.png",

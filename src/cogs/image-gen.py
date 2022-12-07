@@ -108,7 +108,7 @@ class ImageGen(commands.Cog):
         Create a GTA inspired mission passed image of the user.
 
         **Args:**
-        • `[member]` -The member whose image to edit, defaults to the cmd invoker.
+        • `[member]` - The member whose image to edit, defaults to the cmd invoker.
 
         **Syntax:**
         ```
@@ -148,7 +148,7 @@ class ImageGen(commands.Cog):
         A triggered meme of the given user
 
         **Args:**
-        • `[member]` -The member whose image to edit, defaults to the cmd invoker.
+        • `[member]` - The member whose image to edit, defaults to the cmd invoker.
 
         **Syntax:**
         ```
@@ -226,7 +226,7 @@ class ImageGen(commands.Cog):
         Make someone join the soviet union.
 
         **Args:**
-        • `[member]` -The member whose image to edit, defaults to the cmd invoker.
+        • `[member]` - The member whose image to edit, defaults to the cmd invoker.
 
         **Syntax:**
         ```
@@ -266,7 +266,7 @@ class ImageGen(commands.Cog):
         Pixels, Gotta love em'.
 
         **Args:**
-        • `[member]` -The member whose image to edit, defaults to the cmd invoker.
+        • `[member]` - The member whose image to edit, defaults to the cmd invoker.
 
         **Syntax:**
         ```
