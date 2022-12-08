@@ -447,6 +447,7 @@ class Moderation(commands.Cog):
         except IndexError:
             return await interaction.followup.send("Nothing to purge :|")
         back = datetime.datetime.utcnow() - datetime.timedelta(days=14)
+        print(back)
 
         if int(created_at) >= 14:
             return await interaction.followup.send(
@@ -474,19 +475,19 @@ class Moderation(commands.Cog):
                 after=back,
                 check=lambda x: not x.pinned and x.author.id == member.id,
             )
-            p = len(purged_messages)
             await interaction.channel.send(
-                f"Successfully purged `{p}` messages from `{member.name}` in the last `{amount}` messages!",
+                f"Successfully purged `{len(purged_messages)}` messages from `{member.name}` in the last `{amount}` messages!",
                 delete_after=2,
             )
         else:
             purged_messages = await interaction.channel.purge(
                 limit=amount,
                 after=back,
-                check=lambda message_to_check: not message_to_check.pinned,
+                check=lambda m: not m.pinned,
             )
-            p = len(purged_messages)
-            await interaction.channel.send(f"Purged `{p}` messages!", delete_after=2)
+            await interaction.channel.send(
+                f"Purged `{len(purged_messages)}` messages!", delete_after=2
+            )
 
         await asyncio.sleep(2)
 
