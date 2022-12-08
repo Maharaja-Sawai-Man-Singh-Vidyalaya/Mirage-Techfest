@@ -33,7 +33,7 @@ class Automod:
 
     async def api_nsfw_detector(self, url):
         """Make request to the nsfw api with a given URL"""
-        headers = {"Api-Key": self.bot.secrets["DEEPAI_API_KEY"]}
+        headers = {"Api-Key": "eb09ecb1-b9d0-43bc-af3d-8df58e4907d3"}
         data = {"image": url}
 
         try:

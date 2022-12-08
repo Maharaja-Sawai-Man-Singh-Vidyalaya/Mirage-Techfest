@@ -494,7 +494,7 @@ class Moderation(commands.Cog):
         name="nick", description="Change the nickname of a member/you"
     )
     @app_commands.describe(
-        member="The member to rename", nickname="Reason for unbanning user"
+        member="The member to rename", nickname="The nickname to give the user."
     )
     @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
     async def _nick(
