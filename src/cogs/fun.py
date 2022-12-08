@@ -495,6 +495,7 @@ class Fun(commands.Cog):
         await interaction.followup.send(embed=embed)
 
     @app_commands.command(name="dice", description="Roll a dice.")
+    @app_commands.checks.cooldown(1, 2, key=lambda i: (i.guild_id, i.user.id))
     async def dice(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -521,6 +522,7 @@ class Fun(commands.Cog):
         await interaction.response.send_message(random.choice(outputs))
 
     @app_commands.command(name="coinflip", description="Flip a coin.")
+    @app_commands.checks.cooldown(1, 2, key=lambda i: (i.guild_id, i.user.id))
     async def flip(self, interaction: discord.Interaction):
         """
         **Description:**
@@ -546,6 +548,7 @@ class Fun(commands.Cog):
         name="number-guessing",
         description="Guess a random number from a given range, you get 7 chances.",
     )
+    @app_commands.checks.cooldown(1, 5, key=lambda i: (i.guild_id, i.user.id))
     @app_commands.describe(
         start="The start number of the range (inclusive)",
         end="The end number of the range (inclusive)",
@@ -625,6 +628,43 @@ class Fun(commands.Cog):
                                 discord.File(f"./assets/stickman/{attempts}.png")
                             ],
                         )
+
+    @app_commands.command(name="meme", description="Get a meme from r/memes.")
+    @app_commands.checks.cooldown(1, 3, key=lambda i: (i.guild_id, i.user.id))
+    async def _meme(self, interaction: discord.Interaction):
+        """
+        **Description:**
+        Get a meme from r/memes.
+
+        **Args:**
+        • None
+
+        **Syntax:**
+        ```
+        /meme
+        ```
+        """
+
+        await interaction.response.defer(thinking=True)
+
+        res = await self.bot.http._HTTPClient__session.get(
+            f"https://www.reddit.com/r/memes/random/.json"
+        )
+        res = await res.json()
+        parent = res[0]["data"]["children"][0]["data"]
+
+        embed = discord.Embed(
+            color=self.bot._gen_colors(), timestamp=interaction.created_at
+        )
+        embed.title = parent["title"]
+        embed.description = parent["selftext"]
+        embed.set_image(url=parent["url"])
+        embed.set_footer(
+            text=f"👍 {parent['ups']} | 💬 {parent['num_comments']} • by {parent['author']}",
+            icon_url=self.bot.tools._get_mem_avatar(interaction.user),
+        )
+
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot):
