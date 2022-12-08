@@ -1,6 +1,20 @@
+
 <p align="center">
+	<h1>TECHFEST Games Of Code</h1>
     <img src="https://i.ibb.co/wz97TGd/mirage-logo-modified.png" width="270" height="270"/>
 </p>
+
+### ➜ Team Mirage
+* **Team Members:**
+	* Siddhant Sharma [Leader]
+	* Abhimanyu Mehta
+	* Arav Toshniwal
+	* Ranvijay Singh
+* **Team ID:** 229242
+* **Bot Github**: https://github.com/Maharaja-Sawai-Man-Singh-Vidyalaya/Mirage-Techfest
+* **Bot Test Server**: https://discord.gg/seePnyxEwS
+
+* PLEASE JOIN THE TEST SERVER LINKED ABOVE TO TEST THE BOT.
 
 ### ➜ Mirage Hostable Bot
 
@@ -25,49 +39,25 @@ Become a patron, by simply clicking on this button **very appreciated!**:
 > For any doubts here, contact S1D#3953 please.
 > Follow the steps given below
 
-Step 1: Fork & Clone the repository
+Step 1: Fork the replit
 
-```sh
-$ git clone link-to-my-forked-repository.git miragebot
-$ cd miragebot
-```
+<img src="https://i.ibb.co/k4Q4jkQ/Screenshot-2022-12-07-at-10-31-37-PM.png"/>
 
-Step 2: Setup virtual environment
+Step 2: Add environment variables
 This can simply be done by doing the following:
 
-```sh
-$ virtualenv venv # Linux/mac
+* The only environment variable to be added is **TOKEN**, with the value of the token of the bot you have created.
+* You can create a bot by going to the [**discord's developer page**](https://discord.com/developers/applications)
+* PLEASE ENABLE **ALL INTENTS** IN THE BOT PAGE AND GIVE YOUR BOT **ADMINISTRATOR** PERMISSIONS
 
-$ py -m venv venv # Windows
-```
+<img src="https://i.ibb.co/GJ4TZH3/Screenshot-2022-12-07-at-10-35-42-PM.png"/>
 
-Step 3: Activating virtual environment and setting up the dependencies
+Step 3: Configure the config file according to your needs
 
-```sh
-$ source ./venv/bin/activate  # Linux/mac # from root dir
+* PLEASE READ THE CONFIG FILE **CAREFULLY** AND CHANGE **EVERY SERVER, USER ID**
 
-$ venv\Scripts\activate.bat # Windows
-```
-Now our virtual env should be activated, time to install the packages & databases.
-```sh
-$ pip install -U -r requirements.txt  # Linux/mac
+<img src="https://i.ibb.co/j4C1cG0/Screenshot-2022-12-07-at-10-38-08-PM.png"/>
 
-$ py -m pip install -U -r requirements.txt # Windows
-```
+Step 4: Run the bot
 
-Step 4: Configuring the config file
-
-* Copy the 'config_example.yml' file to a file with the name of 'config.yml'
-* Now change the configuration values according to your needs
-
-Step 5: Configuring the env file
-
-* Copy the 'src/.env.example' file to a file with the name of 'src/.env'
-* Change the environment variables accordingly
-
-Step 6: Running the Bot
-
-```sh
-$ cd src # change directory
-$ python3 __main__.py # run the bot
-```
+* Run with the help of the given Run button by replit and use it in your server.
